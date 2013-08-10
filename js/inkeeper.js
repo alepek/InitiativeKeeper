@@ -7,6 +7,8 @@ $(function(){ //DOM Ready
     });
     Gridster = $(".gridster ul").gridster().data('gridster');
  
+ 	restorePreviousState();
+
  	jQuery(".addNewCharacter").click(function()
  	{
  		jQuery("#createCharacterModal").modal("show");
@@ -28,18 +30,64 @@ $(function(){ //DOM Ready
  		Gui.AddNewCharacter(name, identifier, image);
  		jQuery("#createCharacterModal").modal("hide");
  	});
+ 	jQuery(".clearStoredCharacters").click(function()
+ 	{
+		jQuery("#removeCharactersModal").modal("show");
+ 	});
+ 	jQuery("#removeAllCharactersButton").click(function()
+ 	{
+ 		CharacterStore.ClearCharacters();
+ 		Gui.RemoveAllCharacters();
+		jQuery("#removeCharactersModal").modal("hide");
+ 	});
  	jQuery(".characterImages .thumbnail").click(function()
  	{
 		jQuery(".characterImages .thumbnail.active").removeClass("active");
 		jQuery(this).addClass("active");
  	});
+ 	
 });
 
+function restorePreviousState(){
 
+	if(!Modernizr.localstorage)
+	{
+		jQuery("#noLocalStoreSupport").modal("show");
+		return;
+	}
+
+	var characters = CharacterStore.GetCharactersInLocalStore();
+	if(!characters)
+		return;
+
+	for(var i=0;i<characters.length; i++)
+	{
+		var c = {};
+		jQuery.extend(true, c, characters[i]);
+		CharacterStore.AddNewCharacter(c.name, c.identifier, c.imageUrl);
+	}
+	Gui.UpdateFromStorage();
+}
+
+Characters = [];
+Characters.push = function()
+{	
+	var result = Array.prototype.push.apply(this,arguments);
+	CharacterStore.SyncLocalStore();
+	return result;
+};
+Characters.splice = function()
+{	
+	var result = Array.prototype.splice.apply(this,arguments);
+	CharacterStore.SyncLocalStore();
+	return result;
+};
 
 CharacterStore = 
 {
-	Characters: [],
+	lsKey: "inKeeperCharacters",	
+
+
 	GetNewCharacterIdentifier: function()
 	{
 		return guid();
@@ -50,33 +98,57 @@ CharacterStore =
 		character.name = name;
 		character.identifier = identifier;
 		character.imageUrl = imageUrl;
-		CharacterStore.Characters.push(character);
+		Characters.push(character);
 	},
 	RemoveCharacter: function(identifier)
 	{
-		for(var i=0;i<CharacterStore.Characters.length;i++)
+		for(var i=0;i<Characters.length;i++)
 		{
-			if(CharacterStore.Characters[i].identifier == identifier)
+			if(Characters[i].identifier == identifier)
 			{
-				return CharacterStore.Characters.splice(i,1);
+				return Characters.splice(i,1);
 			}
 		}
 		return false;
 	},
 	GetCharacter: function(identifier)
 	{
-		for(var i=0;i<CharacterStore.Characters.length;i++)
+		for(var i=0;i<Characters.length;i++)
 		{
-			if(CharacterStore.Characters[i].guid == identifier)
+			if(Characters[i].guid == identifier)
 			{
-				return CharacterStore.Characters[i];
+				return Characters[i];
 			}
 		}
 		return false;
 	},
+	ClearCharacters: function()
+	{
+		Characters.splice(0, Characters.length);
+	},
 	CloneCharacter: function(identifier)
 	{
 		//var newCharacter = CharacterStore.GetCharacter(identifier);
+	},
+
+	SyncLocalStore: function()
+	{
+		if(!Modernizr.localstorage)
+			return;
+
+		localStorage[CharacterStore.lsKey] = JSON.stringify(Characters);
+	},
+	GetCharactersInLocalStore: function()
+	{
+		if(!Modernizr.localstorage)
+			return;
+
+		var cs =localStorage[CharacterStore.lsKey];
+		if(!cs || !cs.length)
+			return;
+
+		var characters = JSON.parse(cs);
+		return characters;
 	}
 }
 
@@ -113,12 +185,12 @@ Gui =
 		template.find(".removeCharacter").click(function()
 		{
 			var curId = jQuery(this).data("identifier");
-			Gui.RemoveCharacter(curId);
+			Gui.BeginRemoveCharacter(curId);
 		});
 
 		//jQuery(".neatgridster .firstRound").append(template);
 	},
-	RemoveCharacter: function(identifier)
+	BeginRemoveCharacter: function(identifier)
 	{
 		var target =jQuery("#"+identifier);
 		target.find(".cloneRemoveButtons").fadeOut(function()
@@ -135,17 +207,39 @@ Gui =
 
 			target.find(".confirmButtons .confirmButton").click(function()
 			{
-				CharacterStore.RemoveCharacter(identifier);
-				Gridster.remove_widget(target);
+				Gui.EndRemoveCharacter(identifier);
 			});
 
 			target.find(".confirmButtons").fadeIn();
 		})
 		
 	},
+	EndRemoveCharacter: function(identifier)
+	{
+		var target =jQuery("#"+identifier);
+		CharacterStore.RemoveCharacter(identifier);
+		Gridster.remove_widget(target);
+	},
+	RemoveAllCharacters: function()
+	{
+		jQuery(".firstRound .character").each(function()
+		{
+			var id = jQuery(this).prop("id");
+			Gui.EndRemoveCharacter(id);
+		});
+	},
 	CloneCharacter: function(identifier)
 	{
 		// NYI
+	},
+	UpdateFromStorage: function()
+	{
+		Gui.RemoveAllCharacters();
+		for(var i=0; i<Characters.length; i++)
+		{
+			var character = Characters[i];
+			Gui.AddNewCharacter(character.name, character.identifier, character.imageUrl);
+		}
 	}
 }
 

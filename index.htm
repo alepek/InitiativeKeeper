@@ -98,7 +98,8 @@
     </div>
     <div id="footer">
       <div class="container">
-          <a type="button" class="btn btn-large btn-default addNewCharacter">Add new character..</a>
+          <a type="button" class="btn btn-large btn-default addNewCharacter">Add new character</a>
+          <a type="button" class="btn btn-large btn-default clearStoredCharacters">Remove all characters</a>
       </div>
     </div>
     <div class="modal fade" id="createCharacterModal">
@@ -220,6 +221,31 @@
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
             <button type="button" class="btn btn-primary" id="createNewCharacterButton">Create</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+     <div class="modal fade" id="removeCharactersModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body">
+            <p class="lead">Are you sure you want to clear the stored characters? This action cannot be undone.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" id="removeAllCharactersButton">Remove characters</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    <div class="modal fade" id="noLocalStoreSupport">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body">
+            <p class="lead">You pillock! You're using a browser that does not support localStore. Your characters will not be saved between sessions</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default btn-primary" data-dismiss="modal">Fine! Just fine. I'll manage.</button>
           </div>
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
