@@ -55,6 +55,7 @@ function restorePreviousState(){
 		jQuery("#noLocalStoreSupport").modal("show");
 		return;
 	}
+	jQuery(".neatgridster").fadeTo(0,0);
 
 	var characters = CharacterStore.GetCharactersInLocalStore();
 	if(!characters)
@@ -67,6 +68,8 @@ function restorePreviousState(){
 		CharacterStore.AddNewCharacter(c.name, c.identifier, c.imageUrl);
 	}
 	Gui.UpdateFromStorage();
+
+	jQuery(".neatgridster").delay(250).fadeTo(500,1);	
 }
 
 Characters = [];
@@ -97,11 +100,17 @@ CharacterStore =
 	},
 	AddNewCharacter: function(name, identifier, imageUrl)
 	{
+		// let's sanity check this character first.
+		if(!name || !identifier ||!imageUrl)
+			return;
+
 		var character = {};
 		character.name = name;
 		character.identifier = identifier;
 		character.imageUrl = imageUrl;
 		Characters.push(character);
+
+		return character;
 	},
 	RemoveCharacter: function(identifier)
 	{
@@ -118,7 +127,7 @@ CharacterStore =
 	{
 		for(var i=0;i<Characters.length;i++)
 		{
-			if(Characters[i].guid == identifier)
+			if(Characters[i].identifier == identifier)
 			{
 				return Characters[i];
 			}
@@ -131,7 +140,9 @@ CharacterStore =
 	},
 	CloneCharacter: function(identifier)
 	{
-		//var newCharacter = CharacterStore.GetCharacter(identifier);
+		var nc = CharacterStore.GetCharacter(identifier);		
+		nc = CharacterStore.AddNewCharacter(nc.name, CharacterStore.GetNewCharacterIdentifier(), nc.imageUrl);
+		Gui.AddNewCharacter(nc.name, nc.identifier, nc.imageUrl);
 	},
 
 	SyncLocalStore: function()
@@ -159,9 +170,9 @@ Gui =
 {
 	AddNewCharacter: function(name, identifier, imageUrl)
 	{
-		Gridster.add_widget("<li id="+identifier+" data-row=\"1\" data-col=\"1\" data-sizex=\"1\" data-sizey=\"1\" class=\"slightBorder character\">"+
+		var widget = Gridster.add_widget("<li id="+identifier+" data-row=\"1\" data-col=\"1\" data-sizex=\"1\" data-sizey=\"1\" class=\"slightBorder character\">"+
                 "<div class=\"btn-group btn-group-justified cloneRemoveButtons\">"+
-                "<a type=\"button\" class=\"btn btn-default \">Clone</a>"+
+                "<a type=\"button\" class=\"btn btn-default cloneCharacter \">Clone</a>"+
                 "<a type=\"button\" class=\"btn btn-default removeCharacter\">Remove</a></div>"+
                 "<div class=\"btn-group btn-group-justified confirmButtons\">"+
                   "<a type=\"button\" class=\"btn btn-success cancelButton\">Cancel</a>"+
@@ -169,6 +180,7 @@ Gui =
                 "</div><p class=\"nameContainer lead\"></p></li>");
 		
 		var template = jQuery("#"+identifier);
+
 		imageUrl = imageUrl.split("/");
 		imageUrl = imageUrl[imageUrl.length-1];
 		imageUrl = "images/"+imageUrl;
@@ -183,14 +195,18 @@ Gui =
 
 		template.find(".confirmButtons").fadeOut(0);
 		template.find(".removeCharacter").data("identifier", identifier);
+		template.find(".cloneCharacter").data("identifier", identifier);
 		template.data("identifier", identifier);
 
 		template.find(".removeCharacter").click(function()
 		{
-			var curId = jQuery(this).data("identifier");
-			Gui.BeginRemoveCharacter(curId);
+			Gui.BeginRemoveCharacter(jQuery(this).data("identifier"));
 		});
-
+		template.find(".cloneCharacter").click(function()
+		{
+			CharacterStore.CloneCharacter(jQuery(this).data("identifier"));
+		})
+		return template;
 		//jQuery(".neatgridster .firstRound").append(template);
 	},
 	BeginRemoveCharacter: function(identifier)
@@ -225,15 +241,15 @@ Gui =
 	},
 	RemoveAllCharacters: function()
 	{
-		jQuery(".firstRound .character").each(function()
-		{
-			var id = jQuery(this).prop("id");
+		var items = jQuery(".firstRound .character");
+		for (var i = items.length - 1; i >= 0; i--) 
+		{			
+			var id = jQuery(items[i]).prop("id");
 			Gui.EndRemoveCharacter(id);
-		});
-	},
-	CloneCharacter: function(identifier)
-	{
-		// NYI
+		};
+			
+			
+
 	},
 	UpdateFromStorage: function()
 	{
@@ -241,7 +257,7 @@ Gui =
 		for(var i=0; i<Characters.length; i++)
 		{
 			var character = Characters[i];
-			Gui.AddNewCharacter(character.name, character.identifier, character.imageUrl);
+			var added = Gui.AddNewCharacter(character.name, character.identifier, character.imageUrl);
 		}
 	}
 }
