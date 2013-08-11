@@ -21,15 +21,15 @@
         .brightertext{
             color:#eee;
         }
-        .characterContainer img{
+        .tinyCharacterContainer img, .characterContainer img{
             -webkit-box-shadow:   0px 0px 10px 3px rgba(33, 33, 33, 1);                    
             box-shadow:         0px 0px 10px 3px rgba(33, 33, 33, 1);
             max-width:100%;
         }
-        .characterContainer .imageContainer{
+        .tinyCharacterContainer .imageContainer, .characterContainer .imageContainer{
           max-width:220px;
         }
-        .characterContainer .nameContainer{
+        .tinyCharacterContainer .nameContainer, .characterContainer .nameContainer{
             color:#eee;
             overflow:hidden;
             margin-bottom:0px;
@@ -47,11 +47,21 @@
             -moz-box-shadow:    0px 0px 15px 3px rgba(50, 50, 166, 0.75);
             box-shadow:         0px 0px 15px 3px rgba(50, 50, 166, 0.75);
         }
-        #characters{
+        #characters, #phasesContainer, #mainHeader{
           margin:0.5em;
         }
         .initiativeInput{
           padding:5px;
+        }
+        .niceSeparator{
+          border-top: 1px solid #666;
+          margin-top:10px;
+          margin-bottom:10px;
+          -webkit-box-shadow:   0px 0px 20px 3px rgba(33, 33, 33, 0.66);                    
+            box-shadow:         0px 0px 20px 3px rgba(33, 33, 33, 0.66);
+        }
+        .paddedHeader{
+          padding-left:10px;
         }
     </style>
 
@@ -65,7 +75,18 @@
           <a type="button" class="btn btn-large btn-default setInitiativesButton">Initiatives</a>
       </div>
     </div>
+    <div class="row" id="mainHeader">
+      <div class="col-12 col-lg-12">
+        <h3 class="brightertext">Characters</h3>
+      </div>
+    </div>
+    
     <div class="row" id="characters">
+
+
+    </div>
+
+    <div id="phasesContainer" class="row">
 
     </div>
 
@@ -250,11 +271,26 @@
       </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
     <div id="templateContainer" style="display:none">
-      <div class="characterContainer col-2">
+
+      <div class="characterContainer col-2 col-lg-2">
         <div class="imageContainer">
           <img src="" alt="" class="img-rounded">
-          <p class="nameContainer lead text-center"></p>
+          <p class="nameContainer text-center"></p>
         </div>          
+      </div>
+
+      <div class="tinyCharacterContainer col-1 col-lg-1">
+        <div class="imageContainer">
+          <img src="" alt="" class="img-rounded">
+          <p class="nameContainer text-center"></p>
+        </div>          
+      </div>
+
+      <div class="phaseTemplate">
+        <div class="col-12 col-lg-12">
+          <hr class="niceSeparator"/>
+          <h3 class="brighterText">Phase <span class="phaseNumber"></span></h3>
+        </div>   
       </div>
 
       <div class="checkbox characterCheckBox">

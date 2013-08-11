@@ -1,12 +1,12 @@
 
 Gui =
 {
-	AddNewCharacter: function(character)
+	AddNewCharacter: function(character, delay)
 	{	
 		var imageUrl= character.imageUrl;
 		var name = character.name;
 		var identifier = character.identifier;
-		var template = jQuery("#templateContainer .characterContainer").clone();
+		var template = jQuery("#templateContainer .tinyCharacterContainer").clone();
 
 		imageUrl = imageUrl.split("/");
 		imageUrl = imageUrl[imageUrl.length-1];
@@ -18,8 +18,14 @@ Gui =
 
 		template.find(".nameContainer").text(name);
 		template.data("identifier", identifier);
-
+		template.fadeTo(0,0);
 		jQuery("#characters").append(template);
+
+		var fadeTime = 500;
+		if(delay)
+			template.delay(delay).fadeTo(fadeTime,1);
+		else
+			template.fadeTo(fadeTime, 1);
 		//jQuery(".neatgridster .firstRound").append(template);
 	},
 	BeginRemoveCharacter: function(identifier)
@@ -62,13 +68,59 @@ Gui =
 		for(var i=0; i<Characters.length; i++)
 		{
 			var character = Characters[i];
-			var added = Gui.AddNewCharacter(character);
+			var added = Gui.AddNewCharacter(character, i*100);
+		}
+	},
+
+	UpdatePhaseCalculation: function()
+	{
+		var phases = calculateInitiatives(Modals.initiativeOrder === Modals.high);
+ 		Gui.CreatePhasesAndOrder(phases);
+	},
+	CreatePhasesAndOrder: function(phases)
+	{
+
+		jQuery("#phasesContainer").empty();
+		for(var i=0; i<phases.length; i++)
+		{
+			var phaseTemplate = jQuery("#templateContainer .phaseTemplate").clone();
+			phaseTemplate.find(".phaseNumber").text(i+1);
+
+			var c = phases[i];
+			for(var k=0; k<c.length; k++)
+			{
+				var character = c[k]
+				var imageUrl= character.imageUrl;
+				var name = character.name;
+
+				var template = jQuery("#templateContainer .characterContainer").clone();
+
+				imageUrl = imageUrl.split("/");
+				imageUrl = imageUrl[imageUrl.length-1];
+				imageUrl = "images/"+imageUrl;
+
+				var thumbnail = template.find("img");
+				template.css("padding", "5px");
+				thumbnail.attr("src", imageUrl);
+
+				template.find(".nameContainer").text(name);
+
+				template.fadeTo(0,0);
+				jQuery(phaseTemplate).append(template);
+
+				var fadeTime = 500;
+				template.delay(k*100).fadeTo(fadeTime,1);
+			}
+			jQuery("#phasesContainer").append(phaseTemplate);
 		}
 	}
 }
 
 Modals = 
 {
+	initiativeOrder: "high",
+	high: "high",
+	low: "low",
 	UpdateRemoveCharactersModal: function()
 	{
 		var target = jQuery("#removeCharacterModal .chooseCharacters").empty();
@@ -108,9 +160,18 @@ Modals =
 
 			if(c[i].actions)
 				clone.find(".actions").prop("value", c[i].actions);
+			else
+				clone.find(".actions").prop("value", 1);
+
 
 			if(c[i].modifier)
 				clone.find(".modifier").prop("value", c[i].modifier);
+			else
+				clone.find(".modifier").prop("value", 0);
+
+
+			if(c[i].initiative)
+				clone.find(".initiative").prop("value", c[i].initiative);
 
 			target.append(clone);
 		}
@@ -130,12 +191,27 @@ Modals =
 			var modifier = target.find(".modifier").val();
 			var actions = target.find(".actions").val();
 
-			if(!jidentifier)
+			var testForNumber = function(num)
+			{
+				if(num === "")
+					return true;
+				if(isNaN(num))
+					return false;
+
+				return true;
+			}
+
+			if(!identifier)
 				return false;
-			if(!initiative)
+			if(!testForNumber(initiative) || initiative == "")
+				return false;
+			if(!testForNumber(modifier))
+				return false;
+			if(!testForNumber(actions))
+				return false;
+			if(actions === "0" || actions === 0)  
 				return false;
 
-			// todo: add some number checking here. None of the inputs may be anything else than an integer.
 		}
 		return true;
 	},
@@ -156,11 +232,12 @@ Modals =
 			if(!actions)
 				actions = 1;
 
-			var initiativeItem = {identifier:identifier, initiative:initiative, 
-				modifier:modifier, actions:actions};
+			var initiativeItem = {identifier:identifier, initiative:parseInt(initiative), 
+				modifier:parseInt(modifier), actions:parseInt(actions)};
 
 			CharacterStore.AddValuesToCharacter(initiativeItem);
 			CharacterStore.SyncLocalStore();
 		}
+		Modals.initiativeOrder = jQuery(".initiativeOrder").val();
 	}
 }

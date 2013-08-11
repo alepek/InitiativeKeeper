@@ -28,6 +28,7 @@ $(function(){ //DOM Ready
  	jQuery(".removeCharactersButton").click(function()
  	{
  		Modals.UpdateRemoveCharactersModal();
+
  		jQuery("#removeCharacterModal").modal("show");
  	});
 
@@ -37,6 +38,7 @@ $(function(){ //DOM Ready
  		for(var i=0;i<selected.length;i++)
  			CharacterStore.RemoveCharacter(selected[i]);
  		Gui.UpdateFromStorage();
+ 		Gui.UpdatePhaseCalculation();
  		jQuery("#removeCharacterModal").modal("hide");
  	});
 
@@ -47,10 +49,10 @@ $(function(){ //DOM Ready
  	});
  	jQuery("#calculateInitiativesButton").click(function()
  	{
- 		if(Modals.ValidateInitiativeInfo)
+ 		if(Modals.ValidateInitiativeInfo())
  		{
 	 		Modals.WriteInitiativeInfoToCharacters();
-
+	 		Gui.UpdatePhaseCalculation();
 	 		jQuery("#initativesModal").modal("hide");
  		}
  	});
@@ -62,6 +64,69 @@ $(function(){ //DOM Ready
  	});
  	
 });
+
+function calculateInitiatives(highestFirst)
+{
+	// calculates initiative and returns a multidimensional array with the order for each phase.
+	// the characters are assumed to be up-to-date with input at this point.
+	var phases = [];
+
+	var lowSorter = function(a,b)
+	{
+		var initA = a.initiative + a.modifier;
+		var initB = b.initiative + b.modifier;
+		var result = initA - initB;
+
+		var random = Math.ceil(Math.random()-0.5)
+		if(result === 0) // so they've tied, let's randomize it.
+		{
+			if(random === 1)
+				return -1;
+			return 1;
+		}
+
+		return result;
+	}
+	var highSorter = function(a,b)
+	{
+		var initA = a.initiative + a.modifier;
+		var initB = b.initiative + b.modifier;
+		var result = initB - initA;
+
+		var random = Math.ceil(Math.random()-0.5)
+		if(result === 0) // so they've tied, let's randomize it.
+		{
+			if(random === 1)
+				return -1;
+			return 1;
+		}
+
+		return result;
+	}
+
+	for(var i=0; i<Characters.length; i++)
+	{
+		var character = Characters[i];
+		var actions = character.actions;
+		for(var k=0;k<actions; k++)
+		{
+			if(!phases[k])
+				phases[k] = [];
+
+			phases[k].push(character);
+		}
+	}
+
+	for(var i=0;i<phases.length; i++)
+	{
+		if(highestFirst)
+			phases[i].sort(highSorter);
+		else
+			phases[i].sort(lowSorter);			
+	}
+
+	return phases;
+}
 
 function restorePreviousState(){
 
@@ -97,4 +162,5 @@ function guid() {
   return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
          s4() + '-' + s4() + s4() + s4();
 }
+
 
