@@ -209,7 +209,7 @@ Modals =
 				return false;
 			if(!testForNumber(actions))
 				return false;
-			if(actions === "0" || actions === 0)  
+			if(actions === "0" || actions === 0 || parseInt(actions) <= 0)  
 				return false;
 
 		}
