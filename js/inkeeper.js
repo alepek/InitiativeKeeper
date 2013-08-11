@@ -19,7 +19,7 @@ $(function(){ //DOM Ready
  		}
 
  		var identifier = CharacterStore.GetNewCharacterIdentifier();
- 		var character = {name:name, identifier:identifier, imageUrl:image};
+ 		var character = {name:name, identifier:identifier, imageUrl:image, modifier:0, initiative: 0, actions: 1};
  		CharacterStore.AddNewCharacter(character);
  		Gui.AddNewCharacter(character);
  		jQuery("#createCharacterModal").modal("hide");
@@ -75,9 +75,14 @@ $(function(){ //DOM Ready
  	});
  	jQuery("#calculateInitiativesButton, .rerollInitiatives").click(function()
  	{
- 		Modals.PopulateInitiativeInput();
+
  		var selected = jQuery("#ruleSystemSelect").val();
  		var initiatives = jQuery("#initiativesModal .initiative");
+		if(initiatives.length != Characters.length)
+		{
+			Modals.PopulateInitiativeInput();
+			initiatives = jQuery("#initiativesModal .initiative");
+		}
 
  		if(selected != "manual")
  		{
