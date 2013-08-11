@@ -13,7 +13,6 @@ Gui =
 		//imageUrl = "images/"+imageUrl;
 
 		var thumbnail = template.find("img");
-		template.css("padding", "5px");
 		thumbnail.attr("src", imageUrl);
 
 		template.find(".nameContainer").text(name);
@@ -60,7 +59,7 @@ Gui =
 	},
 	RemoveAllCharacters: function()
 	{
-		jQuery("#characters").empty();
+		jQuery("#characters .tinyCharacterContainer").remove();
 	},
 	UpdateFromStorage: function()
 	{

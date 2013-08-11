@@ -36,7 +36,10 @@
         .characterContainer{
           margin-bottom:20px;
         }
-        .tinyCharacterContainer img, .characterContainer img{
+        .tinyCharacterContainer{
+          padding:5px;
+        }
+        .tinyCharacterContainer img, .characterContainer img, .control{
             -webkit-box-shadow:   0px 0px 10px 3px rgba(33, 33, 33, 1);                    
             box-shadow:         0px 0px 10px 3px rgba(33, 33, 33, 1);
             max-width:100%;
@@ -64,7 +67,7 @@
             -moz-box-shadow:    0px 0px 15px 3px rgba(50, 50, 166, 0.75);
             box-shadow:         0px 0px 15px 3px rgba(50, 50, 166, 0.75);
         }
-        #characters, #phasesContainer, #mainHeader{
+        #characters, #phasesContainer, #mainHeader, #controls{
           margin:0.5em;
         }
         .initiativeInput{
@@ -102,12 +105,13 @@
           <a type="button" class="btn btn-large btn-default rerollInitiatives">Reroll</a>
       </div>
     </div>
+
     <div class="row" id="mainHeader">
       <div class="col-12 col-lg-12">
         <h3 class="brightertext">Characters</h3>
       </div>
     </div>
-    
+
     <div class="row" id="characters">
 
 
