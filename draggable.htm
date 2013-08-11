@@ -12,29 +12,59 @@
     <script src="js/modernizr-2.6.2.min.js"></script>
     <script src="js/jquery-2.0.3.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
-    <script src="js/gui.js"></script>
+    <script src="js/jquery.gridster.min.js"></script>
+    <script src="js/draggableGui.js"></script>
     <script src="js/characterStore.js"></script>
-    <script src="js/inkeeper.js"></script>
+    <script src="js/inkeeperDraggable.js"></script>
 
     <style>
-        body{background: #454545;}
+        body{background: #444;}
         .brightertext{
             color:#eee;
         }
-        .characterContainer img{
-            -webkit-box-shadow:   0px 0px 10px 3px rgba(33, 33, 33, 1);                    
-            box-shadow:         0px 0px 10px 3px rgba(33, 33, 33, 1);
-            max-width:100%;
+        .slightBorder{
+            border:1px solid #999;
+            list-style: none;
+            -webkit-box-shadow:  0px 0px 10px 1px rgba(33, 33, 33, 1);                    
+            box-shadow:  0px 0px 10px 1px rgba(33, 33, 33, 1);
         }
-        .characterContainer .imageContainer{
-          max-width:220px;
+        .neatgridster {
+            padding: 1em;      
         }
-        .characterContainer .nameContainer{
-            color:#eee;
+        .gridster
+        {
+            list-style: :none;
+        }
+        .firstRound{
+           
+        }
+        .secondRound{
+            
+        }
+        .btn{
+            border-radius:0px;
+        }
+        .largeGlyph{
+            font-size: x-large;
+            padding:3px;
+            text-shadow: 0px 0px 6px rgba(125, 125, 125, 0.75);
+        }
+        .character .btn{
+            padding: 2px 4px;
+        }
+        .character .form-control{
+            height:26px;
+        }
+        .character a{
+            border:none;
+        }
+        .character .nameContainer{
+            color:white;
+            margin-top:125px;
+            background-color:black;
+            opacity:0.75;
+            padding-left:10px;
             overflow:hidden;
-            margin-bottom:0px;
-            margin-top:5px;
-            text-shadow: 0px 0px 15px rgba(33, 33, 33, 1);
         }
         #header{
             background-color:#777;
@@ -43,15 +73,9 @@
             padding-bottom:1em;
         }
         .thumbnail.active{
-            -webkit-box-shadow: 0px 0px 15px 3px rgba(50, 50, 166, 0.75);
-            -moz-box-shadow:    0px 0px 15px 3px rgba(50, 50, 166, 0.75);
-            box-shadow:         0px 0px 15px 3px rgba(50, 50, 166, 0.75);
-        }
-        #characters{
-          margin:0.5em;
-        }
-        .initiativeInput{
-          padding:5px;
+            -webkit-box-shadow: 0px 0px 25px rgba(50, 50, 166, 0.75);
+            -moz-box-shadow:    0px 0px 25px rgba(50, 50, 166, 0.75);
+            box-shadow:         0px 0px 25px rgba(50, 50, 166, 0.75);
         }
     </style>
 
@@ -60,24 +84,34 @@
 <body>
     <div id="header">
       <div class="controlbuttons">
-          <a type="button" class="btn btn-large btn-default addNewCharacterButton">Add</a>
-          <a type="button" class="btn btn-large btn-default removeCharactersButton">Remove</a>
-          <a type="button" class="btn btn-large btn-default setInitiativesButton">Initiatives</a>
+          <a type="button" class="btn btn-large btn-default addNewCharacter">Add new..</a>
+          <a type="button" class="btn btn-large btn-default clearStoredCharacters">Remove all..</a>
       </div>
     </div>
-    <div class="row" id="characters">
+    <div class="neatgridster">
+        <div class="gridster firstRound">
+            <ul>
 
+  
+            </ul>
+        </div>
+
+        <div class="gridster secondRound">
+            <ul>
+
+            </ul>
+        </div>
     </div>
 
     <div class="modal fade" id="createCharacterModal">
       <div class="modal-dialog">
         <div class="modal-content">
-          <div class="modal-header">
-              <p class="lead">Please select an image and provide a name.</p>
-          </div>
           <div class="modal-body">
             <div class="characterImages">
                 <div class="row">
+                    <div class="col-lg-12">
+                        <p class="lead">Please select an image and provide a name.</p>
+                    </div>
                   <div class="col-lg-3 col-3">
                     <a href="#" class="thumbnail">
                       <img src="images/A.png" alt="">
@@ -191,48 +225,16 @@
           </div>
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
-    </div>
-    <div class="modal fade" id="removeCharacterModal">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <p class="lead">Choose one or several characters to remove.</p>
-          </div>
-          <div class="modal-body">
-            <form>
-              <fieldset>
-                <div class="chooseCharacters form-group">
-
-                </div>
-              </fieldset>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-primary" id="removeCharactersButton">Remove characters</button>
-          </div>
-        </div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
-    <div class="modal fade" id="initativesModal">
+     <div class="modal fade" id="removeCharactersModal">
       <div class="modal-dialog">
         <div class="modal-content">
-          <div class="modal-header">
-            <p class="lead">Enter initiative, minuses/bonuses, actions and initiative order</p>
-          </div>
           <div class="modal-body">
-            <div class="characterList">
-
-            </div>
-            <hr/>
-            <select class="form-control initiativeOrder">
-              <option value="high">Highest first</option>
-              <option value="low">Lowest first</option>
-            </select>
+            <p class="lead">Are you sure you want to clear the stored characters? This action cannot be undone.</p>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-primary" id="calculateInitiativesButton">Calculate</button>
+            <button type="button" class="btn btn-primary" id="removeAllCharactersButton">Remove characters</button>
           </div>
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
@@ -250,27 +252,18 @@
       </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
     <div id="templateContainer" style="display:none">
-      <div class="characterContainer col-2">
-        <div class="imageContainer">
-          <img src="" alt="" class="img-rounded">
-          <p class="nameContainer lead text-center"></p>
-        </div>          
-      </div>
-
-      <div class="checkbox characterCheckBox">
-        <label>
-          <input type="checkbox" value="">
-          <span class="characterName"></span>
-        </label>
-      </div>
-
-      <div class="initiativeInput row">
-        <label class="characterName col-lg-3 col-3">Namn</label>
-        <input type="number" class="initiative col-lg-3 col-3" placeholder="Init" pattern="\d*">
-        <input type="number" class="modifier col-lg-3 col-3" placeholder="Modifier">  
-        <input type="number" class="actions col-lg-3 col-3" placeholder="Actions" pattern="\d*">  
-      </div>
-
+        <ul>
+            <li data-row="1" data-col="1" data-sizex="1" data-sizey="1" class="slightBorder character">
+                <div class="btn-group btn-group-justified cloneRemoveButtons">
+                  <a type="button" class="btn btn-default cloneCharacter"><input type="text" class="form-control" placeholder="Init"></a>
+                  <a type="button" class="btn btn-default removeCharacter">Remove</a>
+                </div>
+                <div class="btn-group btn-group-justified confirmButtons hide">
+                  <a type="button" class="btn btn-success cancelButton">Cancel</a>
+                  <a type="button" class="btn btn-danger confirmButton">Remove</a>
+                </div>
+            </li>   
+        </ul>
     </div>
     </body>
 </html>

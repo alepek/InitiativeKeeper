@@ -1,8 +1,15 @@
 $(function(){ //DOM Ready
  
+	jQuery(".gridster ul").gridster({
+        widget_margins: [10, 10],
+        widget_base_dimensions: [180, 180],
+        max_cols:8,        
+    });
+    Gridster = $(".gridster ul").gridster().data('gridster');
+ 
  	restorePreviousState();
 
- 	jQuery(".addNewCharacterButton").click(function()
+ 	jQuery(".addNewCharacter").click(function()
  	{
  		jQuery("#createCharacterModal").modal("show");
  		jQuery(".characterImages .thumbnail.active").removeClass("active");
@@ -24,37 +31,16 @@ $(function(){ //DOM Ready
  		Gui.AddNewCharacter(character);
  		jQuery("#createCharacterModal").modal("hide");
  	});
-
- 	jQuery(".removeCharactersButton").click(function()
+ 	jQuery(".clearStoredCharacters").click(function()
  	{
- 		Modals.UpdateRemoveCharactersModal();
- 		jQuery("#removeCharacterModal").modal("show");
+		jQuery("#removeCharactersModal").modal("show");
  	});
-
- 	jQuery("#removeCharactersButton").click(function()
+ 	jQuery("#removeAllCharactersButton").click(function()
  	{
- 		var selected = Modals.GetChosenCharacterIdentifiers();
- 		for(var i=0;i<selected.length;i++)
- 			CharacterStore.RemoveCharacter(selected[i]);
- 		Gui.UpdateFromStorage();
- 		jQuery("#removeCharacterModal").modal("hide");
+ 		CharacterStore.ClearCharacters();
+ 		Gui.RemoveAllCharacters();
+		jQuery("#removeCharactersModal").modal("hide");
  	});
-
- 	jQuery(".setInitiativesButton").click(function()
- 	{
- 		Modals.PopulateInitiativeInput();
- 		jQuery("#initativesModal").modal("show");
- 	});
- 	jQuery("#calculateInitiativesButton").click(function()
- 	{
- 		if(Modals.ValidateInitiativeInfo)
- 		{
-	 		Modals.WriteInitiativeInfoToCharacters();
-
-	 		jQuery("#initativesModal").modal("hide");
- 		}
- 	});
-
  	jQuery(".characterImages .thumbnail").click(function()
  	{
 		jQuery(".characterImages .thumbnail.active").removeClass("active");
@@ -97,4 +83,3 @@ function guid() {
   return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
          s4() + '-' + s4() + s4() + s4();
 }
-

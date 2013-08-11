@@ -1,0 +1,7 @@
+CharacterExtras =
+{
+	CalculateInitiatives: function()
+	{
+		
+	}
+}
