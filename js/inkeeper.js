@@ -38,7 +38,6 @@ $(function(){ //DOM Ready
  		for(var i=0;i<selected.length;i++)
  			CharacterStore.RemoveCharacter(selected[i]);
  		Gui.UpdateFromStorage();
- 		Gui.UpdatePhaseCalculation();
  		jQuery("#removeCharacterModal").modal("hide");
  	});
 
