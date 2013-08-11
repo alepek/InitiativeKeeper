@@ -8,9 +8,9 @@ Gui =
 		var identifier = character.identifier;
 		var template = jQuery("#templateContainer .tinyCharacterContainer").clone();
 
-		imageUrl = imageUrl.split("/");
-		imageUrl = imageUrl[imageUrl.length-1];
-		imageUrl = "images/"+imageUrl;
+		//imageUrl = imageUrl.split("/");
+		//imageUrl = imageUrl[imageUrl.length-1];
+		//imageUrl = "images/"+imageUrl;
 
 		var thumbnail = template.find("img");
 		template.css("padding", "5px");
@@ -21,7 +21,7 @@ Gui =
 		template.fadeTo(0,0);
 		jQuery("#characters").append(template);
 
-		var fadeTime = 500;
+		var fadeTime = 250;
 		if(delay)
 			template.delay(delay).fadeTo(fadeTime,1);
 		else
@@ -99,10 +99,6 @@ Gui =
 					var total = initiative + modifier;
 
 					var template = jQuery("#templateContainer .characterContainer").clone();
-
-					imageUrl = imageUrl.split("/");
-					imageUrl = imageUrl[imageUrl.length-1];
-					imageUrl = "images/"+imageUrl;
 
 					var thumbnail = template.find("img");
 					template.css("padding", "5px");

@@ -11,7 +11,7 @@ $(function(){ //DOM Ready
  	jQuery("#createNewCharacterButton").click(function()
  	{
  		var name = jQuery("#characterNameInput").val();
- 		var image = jQuery(".characterImages .active img").prop("src");
+ 		var image = jQuery(".characterImages .thumbnail.active img").prop("src");
 
  		if(!name || !image)
  		{
@@ -23,6 +23,11 @@ $(function(){ //DOM Ready
  		CharacterStore.AddNewCharacter(character);
  		Gui.AddNewCharacter(character);
  		jQuery("#createCharacterModal").modal("hide");
+ 	});
+ 	jQuery("#characterImageUrlInput").change(function()
+ 	{
+ 		var imageUrl = jQuery(this).val();
+ 		jQuery("#previewMyOwnImage").prop("src", imageUrl);
  	});
 
  	jQuery(".removeCharactersButton").click(function()
