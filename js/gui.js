@@ -126,26 +126,37 @@ Modals =
 	low: "low",
 	UpdateRemoveCharactersModal: function()
 	{
-		var target = jQuery("#removeCharacterModal .chooseCharacters").empty();
+		var starget = jQuery("#removeCharacterModal .charactersToRemoveImages").empty();
 
 		var c = Characters;
 		for(var i=0; i<c.length; i++)
 		{
-			var clone = jQuery("#templateContainer .characterCheckBox").clone();
-			clone.find(".characterName").text(c[i].name);
-			clone.find("input").prop("value", c[i].identifier);
-			target.append(clone);
+			var template = jQuery("#templateContainer .modalRemoveCharacter").clone();
+			var thumb = template.find(".thumbnail");
+			thumb.data("identifier", c[i].identifier);
+			thumb.find(".nameContainer").text(c[i].name);
+			thumb.find("img").prop("src", c[i].imageUrl);
+
+			thumb.click(function()
+			{
+				var t = jQuery(this);
+				if(jQuery(this).hasClass("active"))
+					t.removeClass("active");
+				else
+					t.addClass("active");
+			});
+			starget.append(template);
 		}
 	},
 	GetChosenCharacterIdentifiers: function()
 	{
-		var target = jQuery("#removeCharacterModal .chooseCharacters");
+		var target = jQuery("#removeCharacterModal .charactersToRemoveImages");
 
-		var boxes = target.find("input:checked");
+		var boxes = target.find(".active");
 		var selected = [];
 		for(var i=0;i<boxes.length;i++)
 		{
-			var id = jQuery(boxes[i]).prop("value");
+			var id = jQuery(boxes[i]).data("identifier");
 			selected.push(id);
 		}
 		return selected;
