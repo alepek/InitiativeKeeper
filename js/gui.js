@@ -80,39 +80,46 @@ Gui =
 	CreatePhasesAndOrder: function(phases)
 	{
 
-		jQuery("#phasesContainer").empty();
-		for(var i=0; i<phases.length; i++)
+		jQuery("#phasesContainer").fadeTo(250, 0, function()
 		{
-			var phaseTemplate = jQuery("#templateContainer .phaseTemplate").clone();
-			phaseTemplate.find(".phaseNumber").text(i+1);
-
-			var c = phases[i];
-			for(var k=0; k<c.length; k++)
+			jQuery("#phasesContainer").empty().fadeTo(0,1);
+			for(var i=0; i<phases.length; i++)
 			{
-				var character = c[k]
-				var imageUrl= character.imageUrl;
-				var name = character.name;
+				var phaseTemplate = jQuery("#templateContainer .phaseTemplate").clone();
+				phaseTemplate.find(".phaseNumber").text(i+1);
 
-				var template = jQuery("#templateContainer .characterContainer").clone();
+				var c = phases[i];
+				for(var k=0; k<c.length; k++)
+				{
+					var character = c[k]
+					var imageUrl= character.imageUrl;
+					var name = character.name;
+					var initiative = character.initiative;
+					var modifier = character.modifier;
+					var total = initiative + modifier;
 
-				imageUrl = imageUrl.split("/");
-				imageUrl = imageUrl[imageUrl.length-1];
-				imageUrl = "images/"+imageUrl;
+					var template = jQuery("#templateContainer .characterContainer").clone();
 
-				var thumbnail = template.find("img");
-				template.css("padding", "5px");
-				thumbnail.attr("src", imageUrl);
+					imageUrl = imageUrl.split("/");
+					imageUrl = imageUrl[imageUrl.length-1];
+					imageUrl = "images/"+imageUrl;
 
-				template.find(".nameContainer").text(name);
+					var thumbnail = template.find("img");
+					template.css("padding", "5px");
+					thumbnail.attr("src", imageUrl);
 
-				template.fadeTo(0,0);
-				jQuery(phaseTemplate).append(template);
+					template.find(".nameContainer").text(name);
+					template.find(".initiativeNumber").text( "(" + total +")");
 
-				var fadeTime = 500;
-				template.delay(k*100).fadeTo(fadeTime,1);
+					template.fadeTo(0,0);
+					jQuery(phaseTemplate).append(template);
+
+					var fadeTime = 250;
+					template.delay(k*100).fadeTo(fadeTime,1);
+				}
+				jQuery("#phasesContainer").append(phaseTemplate);
 			}
-			jQuery("#phasesContainer").append(phaseTemplate);
-		}
+		});
 	}
 }
 
@@ -149,7 +156,7 @@ Modals =
 	},
 	PopulateInitiativeInput: function()
 	{
-		var target = jQuery("#initativesModal .characterList").empty();
+		var target = jQuery("#initiativesModal .characterList").empty();
 
 		var c = Characters;
 		for(var i=0; i<c.length; i++)
@@ -174,11 +181,12 @@ Modals =
 				clone.find(".initiative").prop("value", c[i].initiative);
 
 			target.append(clone);
+
 		}
 	},
 	ValidateInitiativeInfo: function()
 	{
-		var target = jQuery("#initativesModal .characterList")
+		var target = jQuery("#initiativesModal .characterList")
 		var inputs = target.find(".initiativeInput");
 		if(!inputs.length)
 			return false;
@@ -217,7 +225,7 @@ Modals =
 	},
 	WriteInitiativeInfoToCharacters: function()
 	{
-		var target = jQuery("#initativesModal .characterList")
+		var target = jQuery("#initiativesModal .characterList")
 		var inputs = target.find(".initiativeInput");
 		for(var i=0;i<inputs.length;i++)
 		{

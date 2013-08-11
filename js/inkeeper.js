@@ -44,16 +44,59 @@ $(function(){ //DOM Ready
  	jQuery(".setInitiativesButton").click(function()
  	{
  		Modals.PopulateInitiativeInput();
- 		jQuery("#initativesModal").modal("show");
+ 		var selected = jQuery("#ruleSystemSelect").val();
+ 		if(selected != "manual")
+ 		{
+ 			var inorder = jQuery("#initiativesModal .initiativeOrder");
+ 			var initiatives = jQuery("#initiativesModal .initiative");
+ 			inorder.prop("disabled", true);
+ 			initiatives.prop("disabled", true);
+ 			inorder.prop("selectedIndex", 0);
+ 		}
+ 		jQuery("#initiativesModal").modal("show");
  	});
- 	jQuery("#calculateInitiativesButton").click(function()
+ 	jQuery("#ruleSystemSelect").change(function()
  	{
+ 		var inorder = jQuery("#initiativesModal .initiativeOrder");
+ 		var initiatives = jQuery("#initiativesModal .initiative");
+
+ 		var selected = jQuery(this).val();
+ 		if(selected != "manual")
+ 		{
+ 			inorder.prop("disabled", true);
+ 			initiatives.prop("disabled", true);
+ 			inorder.prop("selectedIndex", 0);
+ 		}
+ 		else
+ 		{
+ 			inorder.prop("disabled", false);
+ 			initiatives.prop("disabled", false);
+ 		}
+ 	});
+ 	jQuery("#calculateInitiativesButton, .rerollInitiatives").click(function()
+ 	{
+ 		Modals.PopulateInitiativeInput();
+ 		var selected = jQuery("#ruleSystemSelect").val();
+ 		var initiatives = jQuery("#initiativesModal .initiative");
+
+ 		if(selected != "manual")
+ 		{
+ 			var randomInitiatives = DiceRoller.GenerateRandomInitiatives(selected, initiatives.length);
+ 			
+ 			for(var i=0; i<initiatives.length; i++)
+ 			{
+ 				var field = jQuery(initiatives[i]);
+ 				field.val(randomInitiatives[i].result);
+ 			}
+ 		}
+
  		if(Modals.ValidateInitiativeInfo())
  		{
 	 		Modals.WriteInitiativeInfoToCharacters();
 	 		Gui.UpdatePhaseCalculation();
-	 		jQuery("#initativesModal").modal("hide");
+	 		jQuery("#initiativesModal").modal("hide");
  		}
+
  	});
 
  	jQuery(".characterImages .thumbnail").click(function()
@@ -61,6 +104,8 @@ $(function(){ //DOM Ready
 		jQuery(".characterImages .thumbnail.active").removeClass("active");
 		jQuery(this).addClass("active");
  	});
+
+
  	
 });
 

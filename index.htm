@@ -15,6 +15,7 @@
     <script src="js/gui.js"></script>
     <script src="js/characterStore.js"></script>
     <script src="js/inkeeper.js"></script>
+    <script src="js/diceRoller.js"></script>
 
     <style>
         body{background: #454545;}
@@ -29,7 +30,7 @@
         .tinyCharacterContainer .imageContainer, .characterContainer .imageContainer{
           max-width:220px;
         }
-        .tinyCharacterContainer .nameContainer, .characterContainer .nameContainer{
+        .tinyCharacterContainer span, .characterContainer span{
             color:#eee;
             overflow:hidden;
             margin-bottom:0px;
@@ -75,7 +76,8 @@
       <div class="controlbuttons">
           <a type="button" class="btn btn-large btn-default addNewCharacterButton">Add</a>
           <a type="button" class="btn btn-large btn-default removeCharactersButton">Remove</a>
-          <a type="button" class="btn btn-large btn-default setInitiativesButton">Initiatives</a>
+          <a type="button" class="btn btn-large btn-default setInitiativesButton">Initiative Settings</a>
+          <a type="button" class="btn btn-large btn-default rerollInitiatives">Reroll</a>
       </div>
     </div>
     <div class="row" id="mainHeader">
@@ -238,7 +240,7 @@
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
-    <div class="modal fade" id="initativesModal">
+    <div class="modal fade" id="initiativesModal">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-body">
@@ -251,10 +253,17 @@
             <div class="characterList">
 
             </div>
-            <hr/>
+            <br/>
             <select class="form-control initiativeOrder">
               <option value="high">Highest first</option>
               <option value="low">Lowest first</option>
+            </select>
+            <hr/>
+            <p class="lead text-center">Or choose a system below to automate rolls</p>
+             <select class="form-control ruleSystem" id="ruleSystemSelect">
+              <option value="manual">Don't automate (requires initiative input)</option>
+              <option value="eclipsePhase">Eclipse Phase (D100 + your modifiers)</option>
+              <option value="drakar">Drakar & Demoner (D10 + your modifiers)</option>
             </select>
           </div>
           <div class="modal-footer">
@@ -281,14 +290,14 @@
       <div class="characterContainer col-2 col-lg-2">
         <div class="imageContainer">
           <img src="" alt="" class="img-rounded">
-          <p class="nameContainer text-center"></p>
+          <p class="text-center"><span class="nameContainer"></span> <span class="initiativeNumber"></span></p>
         </div>          
       </div>
 
       <div class="tinyCharacterContainer col-1 col-lg-1">
         <div class="imageContainer">
           <img src="" alt="" class="img-rounded">
-          <p class="nameContainer text-center"></p>
+          <p class="text-center"><span class="nameContainer"></span></p>
         </div>          
       </div>
 
