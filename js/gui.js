@@ -68,7 +68,7 @@ Gui =
 		for(var i=0; i<Characters.length; i++)
 		{
 			var character = Characters[i];
-			var added = Gui.AddNewCharacter(character, i*100);
+			var added = Gui.AddNewCharacter(character, i*50);
 		}
 	},
 
@@ -111,7 +111,7 @@ Gui =
 					jQuery(phaseTemplate).append(template);
 
 					var fadeTime = 250;
-					template.delay(k*100).fadeTo(fadeTime,1);
+					template.delay(k*50).fadeTo(fadeTime,1);
 				}
 				jQuery("#phasesContainer").append(phaseTemplate);
 			}
