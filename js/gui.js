@@ -1,6 +1,7 @@
 
 Gui =
 {
+	fadeTime: 250,
 	AddNewCharacter: function(character, delay)
 	{	
 		var imageUrl= character.imageUrl;
@@ -17,28 +18,28 @@ Gui =
 
 		template.find(".nameContainer").text(name);
 		template.data("identifier", identifier);
-		template.fadeTo(0,0);
+		template.transition({ opacity: 0 }, 0);
 		jQuery("#characters").append(template);
 
-		var fadeTime = 250;
+
 		if(delay)
-			template.delay(delay).fadeTo(fadeTime,1);
+			template.delay(delay).transition({ opacity: 1 }, Gui.fadeTime);
 		else
-			template.fadeTo(fadeTime, 1);
+			template.transition({ opacity: 1 }, Gui.fadeTime);
 		//jQuery(".neatgridster .firstRound").append(template);
 	},
 	BeginRemoveCharacter: function(identifier)
 	{
 		var target =jQuery("#"+identifier);
-		target.find(".cloneRemoveButtons").fadeOut(function()
+		target.find(".cloneRemoveButtons").transition({ opacity: 0 }, Gui.fadeTime, function()
 		{
 			target.find(".confirmButtons a").unbind();
 
 			target.find(".cancelButton").click(function()
 			{
-				target.find(".confirmButtons").fadeOut(function()
+				target.find(".confirmButtons").transition({ opacity: 0 }, Gui.fadeTime, function()
 				{
-					target.find(".cloneRemoveButtons").fadeIn();
+					target.find(".cloneRemoveButtons").transition({ opacity: 1 }, Gui.fadeTime);
 				});
 			});
 
@@ -47,9 +48,8 @@ Gui =
 				Gui.EndRemoveCharacter(identifier);
 			});
 
-			target.find(".confirmButtons").fadeIn();
-		})
-		
+			target.find(".confirmButtons").transition({ opacity: 1 }, Gui.fadeTime);
+		});		
 	},
 	EndRemoveCharacter: function(identifier)
 	{
@@ -79,9 +79,9 @@ Gui =
 	CreatePhasesAndOrder: function(phases)
 	{
 
-		jQuery("#phasesContainer").fadeTo(250, 0, function()
+		jQuery("#phasesContainer").transition({ opacity: 0 }, Gui.fadeTime, function()
 		{
-			jQuery("#phasesContainer").empty().fadeTo(0,1);
+			jQuery("#phasesContainer").empty().transition({ opacity: 1 }, 0);
 			for(var i=0; i<phases.length; i++)
 			{
 				var phaseTemplate = jQuery("#templateContainer .phaseTemplate").clone();
@@ -106,11 +106,10 @@ Gui =
 					template.find(".nameContainer").text(name);
 					template.find(".initiativeNumber").text( "(" + total +")");
 
-					template.fadeTo(0,0);
+					template.transition({ opacity: 0 }, 0);
 					jQuery(phaseTemplate).append(template);
 
-					var fadeTime = 250;
-					template.delay(k*50).fadeTo(fadeTime,1);
+					template.delay(k*50).transition({ opacity: 1 }, Gui.fadeTime);
 				}
 				jQuery("#phasesContainer").append(phaseTemplate);
 			}

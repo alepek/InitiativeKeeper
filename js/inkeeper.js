@@ -189,7 +189,6 @@ function restorePreviousState(){
 		jQuery("#noLocalStoreSupport").modal("show");
 		return;
 	}
-	jQuery(".neatgridster").fadeTo(0,0);
 
 	var characters = CharacterStore.GetCharactersInLocalStore();
 	if(!characters)
@@ -202,8 +201,6 @@ function restorePreviousState(){
 		CharacterStore.AddNewCharacter(c);
 	}
 	Gui.UpdateFromStorage();
-
-	jQuery(".neatgridster").delay(250).fadeTo(500,1);	
 }
 
 function s4() {
