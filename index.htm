@@ -52,12 +52,25 @@
           max-width:220px;
           max-height:220px;     
         }
-        .tinyCharacterContainer span, .characterContainer span{
+        .tinyCharacterContainer .textContainer, .characterContainer .textContainer{
             color:#eee;
             overflow:hidden;
-            margin-bottom:0px;
-            margin-top:5px;
-            text-shadow: 0px 0px 15px rgba(33, 33, 33, 1);
+            white-space: nowrap;
+            padding-right:220px;
+            padding-top:10px;
+            padding-bottom:10px;
+            padding-left:10px;
+            text-shadow: 0px 0px 15px rgba(133, 133, 133, 1);
+            background: rgba(0,0,0, 0.5);
+
+        }
+        .characterContainer p{
+            overflow:hidden;
+            margin-top:-30px;
+        }
+        .tinyCharacterContainer p{
+            overflow:hidden;
+            margin-top:-25px;
         }
         #header{
             z-index:1001;
@@ -474,22 +487,29 @@
       <div class="characterContainer col-2 col-lg-2">
         <div class="imageContainer">
           <img src="" alt="" class="img-rounded">
-          <p class="text-center"><span class="nameContainer"></span> <span class="initiativeNumber"></span></p>
+          <p>
+            <span class="textContainer">
+              <span class="nameContainer"></span> 
+              <span class="initiativeNumber"></span>
+            </span>
+          </p>
+        </div>          
+      </div>
+
+      <div class="tinyCharacterContainer col-1 col-lg-1">
+        <div class="imageContainer">
+          <img src="" alt="" class="img-rounded">
+          <p>
+            <span class="nameContainer textContainer"></span>
+          </p>
         </div>          
       </div>
 
       <div class="col-lg-3 col-3 modalRemoveCharacter">
         <a href="#" class="thumbnail">
           <img src="images/A.png" alt="">          
-          <p class="text-center nameContainer" style="margin-bottom:0px;"></p>
+          <p class="nameContainer text-center" style="margin-bottom:0px;"></p>
         </a>
-      </div>
-
-      <div class="tinyCharacterContainer col-1 col-lg-1">
-        <div class="imageContainer">
-          <img src="" alt="" class="img-rounded">
-          <p class="text-center"><span class="nameContainer"></span></p>
-        </div>          
       </div>
 
       <div class="phaseTemplate">
