@@ -76,18 +76,20 @@ Gui =
 		var phases = calculateInitiatives(Modals.initiativeOrder === Modals.high);
  		Gui.CreatePhasesAndOrder(phases);
 	},
-	CreatePhasesAndOrder: function(phases)
+	CreatePhasesAndOrder: function(phasesAndCharacters)
 	{
 
-		jQuery("#phasesContainer").transition({ opacity: 0 }, Gui.fadeTime, function()
+		var phases = jQuery("#phasesContainer");
+		phases.transition({ opacity: 0 }, Gui.fadeTime, function()
 		{
-			jQuery("#phasesContainer").empty().transition({ opacity: 1 }, 0);
-			for(var i=0; i<phases.length; i++)
+			phases.empty().transition({ opacity: 1 }, 0);
+			var container = jQuery("<div></div>");
+			for(var i=0; i<phasesAndCharacters.length; i++)
 			{
 				var phaseTemplate = jQuery("#templateContainer .phaseTemplate").clone();
 				phaseTemplate.find(".phaseNumber").text(i+1);
 
-				var c = phases[i];
+				var c = phasesAndCharacters[i];
 				for(var k=0; k<c.length; k++)
 				{
 					var character = c[k]
@@ -100,19 +102,18 @@ Gui =
 					var template = jQuery("#templateContainer .characterContainer").clone();
 
 					var thumbnail = template.find("img");
-					template.css("padding", "5px");
 					thumbnail.attr("src", imageUrl);
 
 					template.find(".nameContainer").text(name);
 					template.find(".initiativeNumber").text( "(" + total +")");
 
-					template.transition({ opacity: 0 }, 0);
-					jQuery(phaseTemplate).append(template);
-
+					template.transition({ opacity: 0 }, 0);	
 					template.delay(k*50).transition({ opacity: 1 }, Gui.fadeTime);
+					phaseTemplate.append(template);
 				}
-				jQuery("#phasesContainer").append(phaseTemplate);
+				container.append(phaseTemplate);
 			}
+			phases.append(container.children());
 		});
 	}
 }
@@ -164,6 +165,8 @@ Modals =
 		var target = jQuery("#initiativesModal .characterList").empty();
 
 		var c = Characters;
+		var container = "<div></div>";
+		container = jQuery(container);
 		for(var i=0; i<c.length; i++)
 		{
 			var clone = jQuery("#templateContainer .initiativeInput").clone();
@@ -185,9 +188,9 @@ Modals =
 			if(c[i].initiative)
 				clone.find(".initiative").prop("value", c[i].initiative);
 
-			target.append(clone);
-
+			container.append(clone);
 		}
+		target.append(container.children());
 	},
 	ValidateInitiativeInfo: function()
 	{
