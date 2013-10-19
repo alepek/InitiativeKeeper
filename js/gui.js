@@ -2,8 +2,7 @@
 Gui =
 {
 	fadeTime: 250,
-	AddNewCharacter: function(character, delay)
-	{	
+	AddNewCharacter: function(character, delay){
 		var imageUrl= character.imageUrl;
 		var name = character.name;
 		var identifier = character.identifier;
@@ -53,8 +52,7 @@ Gui =
 	},
 	EndRemoveCharacter: function(identifier)
 	{
-		var target =jQuery("#"+identifier);		
-
+		var target =jQuery("#"+identifier);
 		CharacterStore.RemoveCharacter(identifier);
 	},
 	RemoveAllCharacters: function()
@@ -74,7 +72,7 @@ Gui =
 	UpdatePhaseCalculation: function()
 	{
 		var phases = calculateInitiatives(Modals.initiativeOrder === Modals.high);
- 		Gui.CreatePhasesAndOrder(phases);
+		Gui.CreatePhasesAndOrder(phases);
 	},
 	CreatePhasesAndOrder: function(phasesAndCharacters)
 	{
@@ -92,7 +90,7 @@ Gui =
 				var c = phasesAndCharacters[i];
 				for(var k=0; k<c.length; k++)
 				{
-					var character = c[k]
+					var character = c[k];
 					var imageUrl= character.imageUrl;
 					var name = character.name;
 					var initiative = character.initiative;
@@ -116,9 +114,8 @@ Gui =
 			phases.append(container.children());
 		});
 	}
-}
-
-Modals = 
+};
+Modals =
 {
 	initiativeOrder: "high",
 	high: "high",
@@ -128,6 +125,14 @@ Modals =
 		var starget = jQuery("#removeCharacterModal .charactersToRemoveImages").empty();
 
 		var c = Characters;
+		var onclick = function()
+		{
+			var t = jQuery(this);
+			if(jQuery(this).hasClass("active"))
+				t.removeClass("active");
+			else
+				t.addClass("active");
+		};
 		for(var i=0; i<c.length; i++)
 		{
 			var template = jQuery("#templateContainer .modalRemoveCharacter").clone();
@@ -136,14 +141,7 @@ Modals =
 			thumb.find(".nameContainer").text(c[i].name);
 			thumb.find("img").prop("src", c[i].imageUrl);
 
-			thumb.click(function()
-			{
-				var t = jQuery(this);
-				if(jQuery(this).hasClass("active"))
-					t.removeClass("active");
-				else
-					t.addClass("active");
-			});
+			thumb.click(onclick);
 			starget.append(template);
 		}
 	},
@@ -194,10 +192,20 @@ Modals =
 	},
 	ValidateInitiativeInfo: function()
 	{
-		var target = jQuery("#initiativesModal .characterList")
+		var target = jQuery("#initiativesModal .characterList");
 		var inputs = target.find(".initiativeInput");
 		if(!inputs.length)
 			return false;
+
+		var testForNumber = function(num)
+		{
+			if(num === "")
+				return true;
+			if(isNaN(num))
+				return false;
+
+			return true;
+		};
 
 		for(var i=0;i<inputs.length;i++)
 		{
@@ -207,33 +215,22 @@ Modals =
 			var modifier = target.find(".modifier").val();
 			var actions = target.find(".actions").val();
 
-			var testForNumber = function(num)
-			{
-				if(num === "")
-					return true;
-				if(isNaN(num))
-					return false;
-
-				return true;
-			}
-
 			if(!identifier)
 				return false;
-			if(!testForNumber(initiative) || initiative == "")
+			if(!testForNumber(initiative) || initiative === "")
 				return false;
 			if(!testForNumber(modifier))
 				return false;
 			if(!testForNumber(actions))
 				return false;
-			if(actions === "0" || actions === 0 || parseInt(actions) <= 0)  
+			if(actions === "0" || actions === 0 || parseInt(actions, 10) <= 0)
 				return false;
-
 		}
 		return true;
 	},
 	WriteInitiativeInfoToCharacters: function()
 	{
-		var target = jQuery("#initiativesModal .characterList")
+		var target = jQuery("#initiativesModal .characterList");
 		var inputs = target.find(".initiativeInput");
 		for(var i=0;i<inputs.length;i++)
 		{
@@ -248,12 +245,17 @@ Modals =
 			if(!actions)
 				actions = 1;
 
-			var initiativeItem = {identifier:identifier, initiative:parseInt(initiative), 
-				modifier:parseInt(modifier), actions:parseInt(actions)};
+			var initiativeItem = 
+			{
+				identifier:identifier,
+				initiative:parseInt(initiative, 10),
+				modifier:parseInt(modifier, 10),
+				actions:parseInt(actions, 10)
+			};
 
 			CharacterStore.AddValuesToCharacter(initiativeItem);
 			CharacterStore.SyncLocalStore();
 		}
 		Modals.initiativeOrder = jQuery(".initiativeOrder").val();
 	}
-}
+};

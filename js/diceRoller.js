@@ -1,4 +1,4 @@
-DiceRoller = 
+DiceRoller =
 {
 	RollD4: function(numDice, exploding)
 	{
@@ -38,14 +38,14 @@ DiceRoller =
 			if(rand === max && exploding)
 			{ // explosion!
 				resultobject.explosions += 1;
-				return rand+rollDie(max, resultobject, exploding); 
+				return rand+rollDie(max, resultobject, exploding);
 				// Surely this recursive behavior will never betray me.
 			}
 			else
 			{
 				return rand;
 			}
-		}
+		};
 
 		// this object tracks all the rolls and stuff.
 		var resObj = {};

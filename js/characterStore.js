@@ -1,25 +1,23 @@
-Characters = [];
+var Characters = [];
 // let's add some localStorage syncing to push and splice
 // this means that the array may not be reinstantiated and these two methods should be the only ones used for 
 // modifying the array, otherwise the localStorage will be out of sync.
 Characters.push = function()
-{	
+{
 	var result = Array.prototype.push.apply(this,arguments);
 	CharacterStore.SyncLocalStore();
 	return result;
 };
 Characters.splice = function()
-{	
+{
 	var result = Array.prototype.splice.apply(this,arguments);
 	CharacterStore.SyncLocalStore();
 	return result;
 };
 
-CharacterStore = 
+CharacterStore =
 {
-	lsKey: "inKeeperCharacters",	
-
-
+	lsKey: "inKeeperCharacters",
 	GetNewCharacterIdentifier: function()
 	{
 		return guid();
@@ -65,8 +63,8 @@ CharacterStore =
 	{
 		var nc = {};
 		var source = CharacterStore.GetCharacter(identifier);
-		jQuery.extend(true,nc,source );	
-		nc.identifier = guid();	
+		jQuery.extend(true,nc,source );
+		nc.identifier = guid();
 		CharacterStore.AddNewCharacter(nc);
 		Gui.AddNewCharacter(nc);
 	},
@@ -105,4 +103,4 @@ CharacterStore =
 		var characters = JSON.parse(cs);
 		return characters;
 	}
-}
+};
